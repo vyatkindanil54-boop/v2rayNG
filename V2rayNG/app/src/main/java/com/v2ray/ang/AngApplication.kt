@@ -25,6 +25,31 @@ class AngApplication : Application() {
         application = this
     }
 
+    private fun installCrashReporter() {
+        val f = java.io.File(filesDir, "crash.txt")
+        val old = Thread.getDefaultUncaughtExceptionHandler()
+        Thread.setDefaultUncaughtExceptionHandler { t, e ->
+            try {
+                f.writeText(android.util.Log.getStackTraceString(e))
+            } catch (_: Throwable) {
+            }
+            old?.uncaughtException(t, e)
+        }
+        val isMain = android.os.Build.VERSION.SDK_INT < 28 || getProcessName() == packageName
+        if (isMain && f.exists()) {
+            val text = try { f.readText() } catch (_: Throwable) { "" }
+            f.delete()
+            if (text.isNotEmpty()) {
+                val send = android.content.Intent(android.content.Intent.ACTION_SEND)
+                    .setType("text/plain")
+                    .putExtra(android.content.Intent.EXTRA_TEXT, text.take(30000))
+                val chooser = android.content.Intent.createChooser(send, "VeerVPN crash")
+                    .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                try { startActivity(chooser) } catch (_: Throwable) { }
+            }
+        }
+    }
+
     private val workManagerConfiguration: Configuration = Configuration.Builder()
         .setDefaultProcessName("${ANG_PACKAGE}:bg")
         .build()
@@ -34,6 +59,8 @@ class AngApplication : Application() {
      */
     override fun onCreate() {
         super.onCreate()
+
+        installCrashReporter()
 
         MmkvManager.initialize(this)
 
