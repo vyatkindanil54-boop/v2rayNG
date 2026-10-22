@@ -10,11 +10,12 @@ android {
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.v2ray.ang"
+        applicationId = "ru.veervpn.app"
         minSdk = 24
         targetSdk = 37
         versionCode = 753
         versionName = "2.3.13"
+        buildConfigField("String", "YANDEX_BANNER_ID", "\"${(properties["YANDEX_BANNER_ID"] as? String) ?: "demo-banner-yandex"}\"")
 
         val abiFilterList = (properties["ABI_FILTERS"] as? String)?.split(';')
         splits {
@@ -164,6 +165,8 @@ android {
 }
 
 dependencies {
+    implementation("com.yandex.android:mobileads:7.9.0")
+
     // Core Libraries
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar", "*.jar"))))
 

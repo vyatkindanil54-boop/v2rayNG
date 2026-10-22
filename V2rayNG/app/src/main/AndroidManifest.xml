@@ -24,9 +24,12 @@
         android:required="false" />
 
     <!-- https://developer.android.com/about/versions/11/privacy/package-visibility -->
-    <uses-permission
-        android:name="android.permission.QUERY_ALL_PACKAGES"
-        tools:ignore="PackageVisibilityPolicy,QueryAllPackagesPermission" />
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_LOCAL_NETWORK" />
@@ -197,6 +200,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:scheme="v2rayng" />
+                <data android:scheme="veervpn" />
                 <data android:host="install-config" />
                 <data android:host="install-sub" />
             </intent-filter>

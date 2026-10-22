@@ -1,6 +1,8 @@
 package com.v2ray.ang.ui.main
 
 import androidx.compose.foundation.layout.Column
+import com.v2ray.ang.ui.ads.VEER_PAID_MIN_BYTES
+import com.v2ray.ang.ui.ads.VeerAdBanner
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -185,12 +187,17 @@ fun MainScreen(
                 )
             },
             bottomBar = {
-                MainBottomBar(
-                    displayText = displayText,
-                    isRunning = isRunning,
-                    isDarkTheme = isDarkTheme,
-                    onAction = onAction
-                )
+                Column {
+                    if (groups.none { (it.usageInfo?.total ?: 0L) >= VEER_PAID_MIN_BYTES }) {
+                        VeerAdBanner()
+                    }
+                    MainBottomBar(
+                        displayText = displayText,
+                        isRunning = isRunning,
+                        isDarkTheme = isDarkTheme,
+                        onAction = onAction
+                    )
+                }
             },
             floatingActionButton = {},
         ) { innerPadding ->
